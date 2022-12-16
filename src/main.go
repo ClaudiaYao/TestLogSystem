@@ -47,7 +47,6 @@ func init() {
 	SaveToTXTFiles()
 	tpl = ParseTemplates()
 
-	// // this part is just for testing usage -> multiple session deletion. will be deleted later
 	// generate_sessions()
 	ReadFromUserFile()
 	ReadFromLoginFile()
