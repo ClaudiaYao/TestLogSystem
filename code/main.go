@@ -51,6 +51,8 @@ func init() {
 	// generate_sessions()
 	ReadFromUserFile()
 	ReadFromLoginFile()
+	ReadJsonAdmin()
+	fmt.Println(Admin)
 
 }
 
@@ -67,6 +69,7 @@ func main() {
 	}
 
 	router.HandleFunc("/", Index)
+	router.HandleFunc("/admin", AdminLogin)
 	router.HandleFunc("/login", Login)
 	router.HandleFunc("/ExamPage/{StudentID}", ExamPage).Methods("GET", "PUT", "POST", "DELETE")
 	router.HandleFunc("/Submitted", Submitted)
