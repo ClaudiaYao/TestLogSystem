@@ -57,13 +57,24 @@ func init() {
 func main() {
 
 	router := mux.NewRouter()
+
+	// files := http.FileServer(http.Dir(config.Static))
+	// mux.Handle("/static/", http.StripPrefix("/static/", files))
+
+	server := &http.Server{
+		Addr:    "localhost:8080",
+		Handler: router,
+	}
+
 	router.HandleFunc("/", Index)
-	// router.HandleFunc("/api/v1/courses", allcourses)
+	router.HandleFunc("/login", Login)
+	router.HandleFunc("/ExamPage/{StudentID}", ExamPage).Methods("GET", "PUT", "POST", "DELETE")
+	router.HandleFunc("/Submitted", Submitted)
 	// router.HandleFunc("/api/v1/courses/{courseid}", course).Methods(
 	// 	"GET", "PUT", "POST", "DELETE")
 	fmt.Println("Listening at port 8080")
 	http.Handle("/favicon.ico", http.NotFoundHandler())
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Fatal(server.ListenAndServe())
 
 	// http.HandleFunc("/", Index)
 
@@ -90,5 +101,5 @@ func main() {
 
 // the handler function when visiting Index page.
 func Index(res http.ResponseWriter, req *http.Request) {
-	tpl.ExecuteTemplate(res, "login.html", nil)
+	http.Redirect(res, req, "/login", http.StatusSeeOther)
 }

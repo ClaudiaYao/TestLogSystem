@@ -5,27 +5,10 @@
     <title>Test Main Page</title>
   </head>
   <body>
-    <h1>Test Main Page</h1>
-    <h2>Please login to your account</h2>
-    <form method="post" id="download_form">
-      <label for="UserName">Username:</label>
-      <input
-        type="text"
-        id="UserName"
-        name="UserName"
-        id="user_name"
-        autocomplete="off"
-      /><br />
-
-      <label for="StudentID">StudentID:</label>
-      <input
-        type="text"
-        id="StudentID"
-        name="StudentID"
-        autocomplete="off"
-      /><br />
-      <input type="submit" value="Login" id="submit_btn" />
-    </form>
+    <h1>Exam Starts</h1>
+    <h2>{{.UserName}}, {{.StudentID}}</h2>
+    <br />
+    <h2>Your exam starts from {{.StartTime}} and will end at {{.EndTime}}</h2>
 
     <p id="log"></p>
 
