@@ -8,5 +8,6 @@ require github.com/gorilla/mux v1.8.0
 
 require (
 	github.com/kennygrant/sanitize v1.2.4 // indirect
+	golang.org/x/crypto v0.4.0 // indirect
 	golang.org/x/net v0.4.0 // indirect
 )

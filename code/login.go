@@ -3,47 +3,13 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gofrs/uuid"
-	"github.com/gorilla/mux"
 	"github.com/kennygrant/sanitize"
+	"golang.org/x/crypto/bcrypt"
 )
-
-func ExamPage(res http.ResponseWriter, req *http.Request) {
-	// http.
-	// 	fmt.Println(req.URL)
-	params := mux.Vars(req)
-
-	// POST is for creating new course
-	if req.Method == http.MethodGet {
-		// read the string sent to the service
-		// that means the client side posts content in JSON format
-		student_id := sanitize.HTML(params["StudentID"])
-		_, ok := UserMap[student_id]
-		if !ok {
-			http.Error(res, "Username or student id does not match.", http.StatusUnauthorized)
-			fmt.Println("not match!")
-			return
-
-		} else {
-			user := UserMap[student_id]
-			user_login := LoginMap[student_id]
-			fmt.Println(user_login)
-			start_time, error := time.Parse("2006-01-02 15:04:05", user_login.LoggingTime)
-
-			if error != nil {
-				fmt.Println(error)
-				return
-			}
-			end_time := start_time.Add(time.Hour * 2)
-			user_info := map[string]interface{}{"UserName": user.UserName, "StudentID": user.StudentID,
-				"StartTime": user_login.LoggingTime, "EndTime": end_time}
-			tpl.ExecuteTemplate(res, "examPage.html", user_info)
-		}
-
-	}
-}
 
 func CheckUserInfoMatch(name, id string) bool {
 	for _, user := range UserMap {
@@ -54,6 +20,60 @@ func CheckUserInfoMatch(name, id string) bool {
 	return false
 
 }
+
+func checkAdminInfoMatch(input_user_name, input_password string) bool {
+
+	if strings.EqualFold(Admin.UserName, input_user_name) {
+		err := bcrypt.CompareHashAndPassword([]byte(Admin.Password), []byte(input_password))
+		if err != nil {
+			return false
+		}
+
+	}
+	return true
+
+}
+
+func AdminLogin(res http.ResponseWriter, req *http.Request) {
+
+	user_id, ok := alreadyLoggedIn(req)
+	if user_id != "" && ok {
+
+		// if already login in, switch to login_confirm page.
+		// if already login in, switch to login_confirm page.
+		http.Redirect(res, req, "/admin/setting", http.StatusSeeOther)
+		return
+	}
+
+	// process form submission
+	if req.Method == http.MethodPost {
+		username := sanitize.HTML(req.FormValue("UserName"))
+		password := sanitize.HTML(req.FormValue("Password"))
+
+		// check if user exist with username
+		ok := checkAdminInfoMatch(username, password)
+		if !ok {
+			http.Error(res, "Username or password does not match.", http.StatusUnauthorized)
+			return
+		}
+
+		// create session
+		id, _ := uuid.NewV4()
+		myCookie := &http.Cookie{
+			Name:  COOKIE_NAME,
+			Value: id.String(),
+		}
+
+		http.SetCookie(res, myCookie)
+		mapSessions[myCookie.Value] = user_id
+		http.Redirect(res, req, "/admin/setting", http.StatusSeeOther)
+		return
+	}
+
+	// without passing any info to the login.gohtml, the page will show login failure information
+	tpl.ExecuteTemplate(res, "admin_login.html", nil)
+}
+
 func Login(res http.ResponseWriter, req *http.Request) {
 
 	student_id, ok := alreadyLoggedIn(req)
