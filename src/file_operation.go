@@ -33,6 +33,7 @@ func ReadFromLoginFile() {
 	for scanner.Scan() {
 		s := strings.TrimSuffix(scanner.Text(), "\n")
 		login_info := strings.Split(s, ",")
+
 		fmt.Println(login_info)
 		LoginMap[login_info[0]] = &LoginInfo{StudentID: login_info[0], LoggingTime: login_info[1],
 			SubmittingTime: login_info[2], SubmittedFileName: login_info[3]}
@@ -42,7 +43,7 @@ func ReadFromLoginFile() {
 		log.Fatal(err)
 	}
 
-	fmt.Println(LoginMap)
+	// fmt.Println(LoginMap)
 
 }
 
@@ -77,6 +78,6 @@ func ReadFromUserFile() {
 		log.Fatal(err)
 	}
 
-	fmt.Println(UserMap)
+	// fmt.Println(UserMap)
 
 }
