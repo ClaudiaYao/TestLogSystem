@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>LOGIN</title>
+  </head>
+  <body>
+    <h1>Welcome to the Test Logging System</h1>
+    <h2>Please login to your account</h2>
+    <form method="post" id="user_form">
+      <label for="UserName">User Name:</label>
+      <input
+        type="text"
+        id="UserName"
+        name="UserName"
+        id="user_name"
+        autocomplete="off"
+      /><br />
+
+      <label for="Password">Student ID:</label>
+      <input
+        type="password"
+        id="Password"
+        name="Password"
+        autocomplete="off"
+      /><br />
+      <input type="submit" value="Login" id="submit_btn" />
+    </form>
+
+    <p id="log"></p>
+
+    <br />
+    {{template "menu"}}
+  </body>
+  <script type="text/javascript">
+    function logSubmit(event) {
+      if (
+        document.getElementById("UserName").value == "" ||
+        document.getElementById("StudentID").value == ""
+      ) {
+        log.textContent = "Please input both UserName and Student ID.";
+        event.preventDefault();
+      }
+    }
+
+    const form = document.getElementById("user_form");
+    const log = document.getElementById("log");
+    form.addEventListener("submit", logSubmit);
+  </script>
+</html>
