@@ -44,7 +44,7 @@ var Admin AdminInfo
 
 // the first thing for the server do is to load the User, Appointment and Venue information from those JSON files.
 func init() {
-	SaveToTXTFiles()
+	// SaveToTXTFiles()
 	tpl = ParseTemplates()
 
 	// generate_sessions()
@@ -71,7 +71,7 @@ func main() {
 	router.HandleFunc("/admin", AdminLogin)
 	router.HandleFunc("/login", Login)
 	router.HandleFunc("/ExamPage/{StudentID}", ExamPage).Methods("GET", "PUT", "POST", "DELETE")
-	router.HandleFunc("/Submitted", Submitted)
+	router.HandleFunc("/submitted", Submitted)
 	// router.HandleFunc("/api/v1/courses/{courseid}", course).Methods(
 	// 	"GET", "PUT", "POST", "DELETE")
 	fmt.Println("Listening at port 8080")

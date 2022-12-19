@@ -18,6 +18,12 @@ func getProjectRootPath() string {
 	return filepath.Dir(wd)
 }
 
+func getShortFileName(fullPathFileName string) string {
+	_, file := filepath.Split(fullPathFileName)
+	return file
+
+}
+
 // ParseTemplates function could find the subdirectories under templates directory and
 // parse them conveniently.
 func ParseTemplates() *template.Template {
