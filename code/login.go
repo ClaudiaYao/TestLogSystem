@@ -130,6 +130,7 @@ func Login(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	fmt.Println("login page...")
 	// without passing any info to the login.gohtml, the page will show login failure information
 	tpl.ExecuteTemplate(res, "login.html", nil)
 }
@@ -138,7 +139,7 @@ func Login(res http.ResponseWriter, req *http.Request) {
 func Submitted(res http.ResponseWriter, req *http.Request) {
 	myCookie, err := req.Cookie(COOKIE_NAME)
 	if err != nil {
-		tpl.ExecuteTemplate(res, "submitted.gohtml", nil)
+		http.Redirect(res, req, "/login", http.StatusSeeOther)
 		return
 	}
 	// delete the session. the MaxAge is set to -1, which will override the
@@ -154,7 +155,7 @@ func Submitted(res http.ResponseWriter, req *http.Request) {
 		MaxAge: -1,
 	}
 	http.SetCookie(res, myCookie)
-	tpl.ExecuteTemplate(res, "submitted.gohtml", nil)
+	tpl.ExecuteTemplate(res, "submitted.html", nil)
 
 }
 

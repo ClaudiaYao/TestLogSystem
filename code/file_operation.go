@@ -81,3 +81,30 @@ func ReadFromUserFile() {
 	// fmt.Println(UserMap)
 
 }
+
+// This function will be called each time when a user session finishes
+// just to back up the record in time. Since we do not use database
+// in this case, we need to keep updating and maintaining the json files.
+func SaveToLogFile() {
+
+	fmt.Println("write to log_info.txt")
+	f, err := os.Create(getProjectRootPath() + "/data/log_info.txt")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer f.Close()
+
+	for _, loginlog := range LoginMap {
+		// user := TestUserMap[k]
+		_, err2 := f.WriteString(loginlog.StudentID + "," + loginlog.LoggingTime + "," +
+			loginlog.SubmittingTime + "," + loginlog.SubmittedFileName + "\n")
+
+		if err2 != nil {
+			log.Println("fail to save to log_info.txt", err)
+			log.Fatal(err2)
+		}
+	}
+
+}
