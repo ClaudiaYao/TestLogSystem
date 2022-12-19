@@ -10,6 +10,22 @@
     <br />
     <h2>Your exam starts from {{.StartTime}} and will end at {{.EndTime}}</h2>
 
+
+
+<form method="post" enctype="multipart/form-data">
+    <label for="UploadFile">Select a files to upload your result:</label>
+    <input
+      type="file"
+      id="UploadFile"
+      name="UploadFile"
+      accept=".py,.zip,image/*"
+      multiple
+    />
+
+    <button id="Submit", name="Submit">Submit</button>
+  </div>
+</form>
+
     <p id="log"></p>
 
     <br />
