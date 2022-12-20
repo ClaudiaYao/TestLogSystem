@@ -2,6 +2,7 @@ package main
 
 import (
 	"crypto/rand"
+	"fmt"
 	"html/template"
 	"log"
 	"math/big"
@@ -81,4 +82,16 @@ func IsAdmin(user_name string) bool {
 	// 	return true
 	// }
 	return false
+}
+
+func createSubmissionFolder() {
+	path := filepath.Join(getProjectRootPath(), "Submission")
+
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		err_1 := os.Mkdir(path, os.ModePerm)
+		// TODO: handle error
+		if err_1 != nil {
+			fmt.Println(err_1)
+		}
+	}
 }

@@ -14,5 +14,5 @@ type LoginInfo struct {
 
 type AdminInfo struct {
 	UserName string
-	Password string
+	Password []byte
 }

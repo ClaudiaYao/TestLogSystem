@@ -1,17 +1,21 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"math/rand"
 	"os"
 	"strconv"
 	"time"
+
+	"golang.org/x/crypto/bcrypt"
 	// "golang.org/x/crypto/bcrypt"
 )
 
 var TestUserMap = make(map[string]*UserInfo)
 var TestLogMap = make(map[string]*LoginInfo)
+var TestAdmin AdminInfo
 
 // this part is just for creating mock data. The map stores structs, not the pointer to structs
 func generate_users() {
@@ -44,7 +48,7 @@ func generate_users() {
 
 func generate_logging_data() {
 
-	for k, _ := range TestUserMap {
+	for k := range TestUserMap {
 		if rand.Intn(5) > 2 {
 
 			random_time := time.Now().Add(time.Minute * time.Duration(rand.Intn(30)))
@@ -116,6 +120,32 @@ func SaveToUserFile() {
 			log.Println("fail to save to appointment.json: ", err)
 			log.Fatal(err2)
 		}
+	}
+
+}
+
+func generate_admin_data() {
+
+	pwd, err := bcrypt.GenerateFromPassword([]byte("Admin"), bcrypt.DefaultCost)
+	if err != nil {
+		fmt.Println("fail to generate admin password")
+		log.Panic("fail to generate admin password")
+	}
+
+	TestAdmin = AdminInfo{UserName: "Claudia", Password: pwd}
+	// fmt.Println(bcrypt.GenerateFromPassword([]byte(input_password), bcrypt.DefaultCost))
+
+	SaveToAdminJSON()
+
+}
+
+func SaveToAdminJSON() {
+
+	json_file, _ := json.MarshalIndent(TestAdmin, "", " ")
+
+	err := os.WriteFile(getProjectRootPath()+"/data/admin_info.json", json_file, 0644)
+	if err != nil {
+		log.Println("fail to save to admin_info.json error: ", err)
 	}
 
 }
