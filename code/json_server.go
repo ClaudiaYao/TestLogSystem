@@ -24,10 +24,10 @@ func ReadJsonAdmin() {
 	// defer the closing of our jsonFile so that we can parse it later on
 
 	byteValue, _ := ioutil.ReadAll(jsonFileAdmin)
-	fmt.Println(byteValue)
 
 	// we unmarshal our byteArray which contains our
 	// jsonFile's content into 'users' which we defined above
 	json.Unmarshal(byteValue, &Admin)
+	fmt.Println(Admin)
 
 }

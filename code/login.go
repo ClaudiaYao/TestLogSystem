@@ -24,7 +24,11 @@ func CheckUserInfoMatch(name, id string) bool {
 func checkAdminInfoMatch(input_user_name, input_password string) bool {
 
 	if strings.EqualFold(Admin.UserName, input_user_name) {
-		err := bcrypt.CompareHashAndPassword([]byte(Admin.Password), []byte(input_password))
+		// bcrypt.GenerateFromPassword([]byte(input_password), bcrypt.DefaultCost)
+		// fmt.Println(bcrypt.GenerateFromPassword([]byte(input_password), bcrypt.DefaultCost))
+		fmt.Println(Admin.Password)
+		fmt.Println("input:", input_password)
+		err := bcrypt.CompareHashAndPassword(Admin.Password, []byte(input_password))
 		if err != nil {
 			return false
 		}
@@ -36,8 +40,8 @@ func checkAdminInfoMatch(input_user_name, input_password string) bool {
 
 func AdminLogin(res http.ResponseWriter, req *http.Request) {
 
-	user_id, ok := alreadyLoggedIn(req)
-	if user_id != "" && ok {
+	user_name, ok := adminAlreadyLoggedIn(req)
+	if user_name == Admin.UserName && ok {
 
 		// if already login in, switch to login_confirm page.
 		// if already login in, switch to login_confirm page.
@@ -48,12 +52,14 @@ func AdminLogin(res http.ResponseWriter, req *http.Request) {
 	// process form submission
 	if req.Method == http.MethodPost {
 		username := sanitize.HTML(req.FormValue("UserName"))
-		password := sanitize.HTML(req.FormValue("Password"))
+		pwd := sanitize.HTML(req.FormValue("Password"))
 
 		// check if user exist with username
-		ok := checkAdminInfoMatch(username, password)
+		ok := checkAdminInfoMatch(username, pwd)
+		fmt.Println("match admin user name and pwd", ok)
 		if !ok {
 			http.Error(res, "Username or password does not match.", http.StatusUnauthorized)
+			fmt.Println("not match!")
 			return
 		}
 
@@ -65,13 +71,14 @@ func AdminLogin(res http.ResponseWriter, req *http.Request) {
 		}
 
 		http.SetCookie(res, myCookie)
-		mapSessions[myCookie.Value] = user_id
-		http.Redirect(res, req, "/admin/setting", http.StatusSeeOther)
-		return
+		// mu_session.Lock()
+		mapSessions[myCookie.Value] = username
+
+		tpl.ExecuteTemplate(res, "settings.html", username)
+	} else {
+		tpl.ExecuteTemplate(res, "admin_login.html", nil)
 	}
 
-	// without passing any info to the login.gohtml, the page will show login failure information
-	tpl.ExecuteTemplate(res, "admin_login.html", nil)
 }
 
 func Login(res http.ResponseWriter, req *http.Request) {
@@ -156,6 +163,32 @@ func Submitted(res http.ResponseWriter, req *http.Request) {
 	}
 	http.SetCookie(res, myCookie)
 	tpl.ExecuteTemplate(res, "submitted.html", nil)
+
+}
+
+// check if the session cookie has the userID. if it has, means already login in. Keep the current operation.
+func adminAlreadyLoggedIn(req *http.Request) (string, bool) {
+	myCookie, err := req.Cookie(COOKIE_NAME)
+	if err != nil {
+		// that means the cookie does not exist
+		return "", false
+	}
+
+	// mu_session.RLock()
+	admin_name, exist := mapSessions[myCookie.Value] //according to the uuid user session, get User object
+	// mu_session.RUnlock()
+
+	if !exist {
+		// If the session id is not present in session map, that means the
+		// user session has been terminated by server side.
+		return "", false
+	}
+
+	if admin_name == Admin.UserName {
+		return admin_name, true
+	} else {
+		return "", false
+	}
 
 }
 

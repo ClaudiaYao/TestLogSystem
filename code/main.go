@@ -45,6 +45,11 @@ var Admin AdminInfo
 // the first thing for the server do is to load the User, Appointment and Venue information from those JSON files.
 func init() {
 	// SaveToTXTFiles()
+
+	//This function only runs when you want to change the password of the admin.
+	// For this demo project, use Admin UserName: Claudia, Admin Pwd: Admin
+	// generate_admin_data()
+
 	tpl = ParseTemplates()
 
 	// generate_sessions()
@@ -52,6 +57,7 @@ func init() {
 	ReadFromLoginFile()
 	ReadJsonAdmin()
 	fmt.Println(Admin)
+	createSubmissionFolder()
 
 }
 
@@ -72,32 +78,14 @@ func main() {
 	router.HandleFunc("/login", Login)
 	router.HandleFunc("/ExamPage/{StudentID}", ExamPage).Methods("GET", "PUT", "POST", "DELETE")
 	router.HandleFunc("/submitted", Submitted)
+	router.HandleFunc("/admin/setting", AdminSetting)
+	router.HandleFunc("/admin/upload", AdminUpload)
 	// router.HandleFunc("/api/v1/courses/{courseid}", course).Methods(
 	// 	"GET", "PUT", "POST", "DELETE")
 	fmt.Println("Listening at port 8080")
 	http.Handle("/favicon.ico", http.NotFoundHandler())
 	log.Fatal(server.ListenAndServe())
 
-	// http.HandleFunc("/", Index)
-
-	// // the following handler functions are defined in user_account.go
-	// http.HandleFunc("/signup", SignUp)
-	// http.HandleFunc("/login", Login)
-	// http.HandleFunc("/logout", LogOut)
-	// http.HandleFunc("/new_appointment", newAppointment)
-	// http.HandleFunc("/update_user", updateUserInfo)
-	// http.HandleFunc("/update_pwd", updatePwd)
-
-	// // the following handler functions are defined in query.go
-	// http.HandleFunc("/query", QueryRecord)
-
-	// // the following two handler functions are specific to administrator, defined in admin.go
-	// http.HandleFunc("/show_session", ShowSessions)
-	// http.HandleFunc("/show_user", ShowUsers)
-
-	// fmt.Println("starting...")
-	// http.Handle("/favicon.ico", http.NotFoundHandler())
-	// log.Fatal(http.ListenAndServe(":5221", nil))
 	// http.ListenAndServeTLS("localhost:8080", "./cert/cert.pem", "./cert/key.pem", nil)
 }
 
