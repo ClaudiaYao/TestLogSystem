@@ -17,7 +17,7 @@
         autocomplete="off"
       /><br />
 
-      <label for="Password">Student ID:</label>
+      <label for="Password">Password:</label>
       <input
         type="password"
         id="Password"
@@ -36,7 +36,7 @@
     function logSubmit(event) {
       if (
         document.getElementById("UserName").value == "" ||
-        document.getElementById("StudentID").value == ""
+        document.getElementById("Password").value == ""
       ) {
         log.textContent = "Please input both UserName and Student ID.";
         event.preventDefault();
