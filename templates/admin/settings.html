@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin Loading Test Material</title>
+  </head>
+  <body>
+    <h1>Dear {{.}}, upload the test requirement and other documents here.</h1>
+
+    <form method="post" action="/admin/upload" enctype="multipart/form-data">
+      <label for="UploadFile">Select files to upload your result:</label>
+      <input type="file" id="UploadFile" name="UploadFile" multiple />
+
+      <button id="Submit" , name="Submit" value="Submit">Submit</button>
+    </form>
+
+    <p id="log"></p>
+
+    <br />
+    {{template "menu"}}
+  </body>
+</html>
