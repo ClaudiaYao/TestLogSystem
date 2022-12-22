@@ -14,15 +14,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - name: check out the branch
+      uses: actions/checkout@v3
+    
+    - name: Setup Go environment
+      uses: actions/setup-go@v3.5.0
+      with:
+        # The Go version to download (if necessary) and use. Supports semver spec and ranges.
+        go-version: 1.19.3 # optional
+        
 
     - name: Set up Go
-      uses: actions/setup-go@v3
+      uses: actions/checkout@v2
       with:
         go-version: 1.19
 
-    - name: Build
-      run: go build -v ./...
-
-    - name: Test
-      run: go test -v ./...
+    - name: test
+      run: cd code 
+         go test -v .
