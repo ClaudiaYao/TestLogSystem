@@ -22,12 +22,6 @@ jobs:
       with:
         # The Go version to download (if necessary) and use. Supports semver spec and ranges.
         go-version: 1.19.3 # optional
-        
-
-    - name: Set up Go
-      uses: actions/checkout@v2
-      with:
-        go-version: 1.19
 
     - name: test
       run: cd code 
