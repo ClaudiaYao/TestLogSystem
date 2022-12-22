@@ -24,5 +24,4 @@ jobs:
         go-version: 1.19.3 # optional
 
     - name: test
-      run: cd code 
-         go test -v .
+      run: cd code | go test -v .
