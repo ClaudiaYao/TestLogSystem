@@ -23,6 +23,7 @@ const COOKIE_NAME = "Test_Cookie"
 var UserMap = make(map[string]*UserInfo)
 var LoginMap = make(map[string]*LoginInfo)
 var Admin AdminInfo
+var router *mux.Router
 
 // generate_sessions() function is only used to generate sessions for testing purpose
 // func generate_sessions() {
@@ -63,8 +64,7 @@ func init() {
 
 func main() {
 
-	router := mux.NewRouter()
-
+	router = mux.NewRouter()
 	// files := http.FileServer(http.Dir(config.Static))
 	// mux.Handle("/static/", http.StripPrefix("/static/", files))
 
