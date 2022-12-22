@@ -58,7 +58,6 @@ func generate_logging_data() {
 			submitted_time := random_time_2.Format("2006-01-02 15:04:05")
 
 			TestLogMap[k] = &LoginInfo{k, login_time, submitted_time, ""}
-			// fmt.Println(TestLogMap[k])
 
 		} else if rand.Intn(3) > 2 {
 			TestLogMap[k] = &LoginInfo{StudentID: k}

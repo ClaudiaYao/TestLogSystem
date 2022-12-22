@@ -57,7 +57,6 @@ func init() {
 	ReadFromUserFile()
 	ReadFromLoginFile()
 	ReadJsonAdmin()
-	fmt.Println(Admin)
 	createSubmissionFolder()
 
 }

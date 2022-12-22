@@ -1,10 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"strings"
 	"testing"
 )
@@ -19,13 +20,12 @@ func TestAdminLogin(t *testing.T) {
 	if err != nil {
 		t.Errorf("expected error to be nil got %v", err)
 	}
-	fmt.Println(data)
 	if !strings.Contains(string(data), "Password:") {
 		t.Error("expected admin page", string(data))
 	}
 }
 
-func TestLoginHandler(t *testing.T) {
+func TestLoginGet(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/login", nil)
 	w := httptest.NewRecorder()
 	Login(w, req)
@@ -35,7 +35,6 @@ func TestLoginHandler(t *testing.T) {
 	if err != nil {
 		t.Errorf("expected error to be nil got %v", err)
 	}
-	fmt.Println(data)
 	if !strings.Contains(string(data), "Please login to your account") {
 		t.Errorf("expected ABC got %v", string(data))
 	}
@@ -74,46 +73,55 @@ func getRandomStudent(logging_status int) *UserInfo {
 	return &UserInfo{}
 }
 
-// func TestLoginUser(t *testing.T) {
-// 	userInfo := getRandomStudent(ALREADYLOGGING)
-// 	if userInfo == nil {
-// 		t.Errorf("could not find the first logging user")
-// 		return
-// 	}
+func TestLoginSubmit(t *testing.T) {
+	userInfo := getRandomStudent(ALREADYLOGGING)
+	if userInfo == nil {
+		t.Errorf("could not find the first logging user")
+		return
+	}
 
-// 	server := httptest.NewServer(router)
-// 	defer server.Close()
+	// when we create a new test server, we need to specify the
+	// handler function. Pay attention that the original mux definition
+	// may not work if using the gorilla/mux, therefore, we use
+	// the default http.NewServeMux.
 
-// 	// here, create a new http.Client and set its timeout, instead of
-// 	// using the defautl http.Client
-// 	netClient := &http.Client{
-// 		Timeout: time.Second * 10,
-// 	}
+	// based on the design of the code, if the redirecting page
+	// path should also be defined in the servemux.
+	router := http.NewServeMux()
+	router.HandleFunc("/login", Login)
+	router.HandleFunc("/ExamPage/"+userInfo.StudentID, ExamPage)
+	server := httptest.NewServer(router)
+	defer server.Close()
 
-// 	// // server.URL is an output, which is appointed by the go program automatically
-// 	form := url.Values{}
-// 	form.Add("UserName", userInfo.UserName)
-// 	form.Add("StudentID", userInfo.StudentID)
+	// here, create a new http.Client and set its timeout, instead of
+	// using the defautl http.Client
+	// netClient := &http.Client{
+	// 	Timeout: time.Second * 10,
+	// }
+	netClient := server.Client()
 
-// 	fmt.Println(server.URL + "/login")
+	// // server.URL is an output, which is appointed by the go program automatically
+	form := url.Values{}
+	form.Add("UserName", userInfo.UserName)
+	form.Add("StudentID", userInfo.StudentID)
 
-// 	// this part fails and I could not find the reason
-// 	// the form value could use the above defined, it is not a problem. It seems that the
-// 	// form value could not be passed to the post request
-// 	// res, err := netClient.PostForm(server.URL+"/login", form)
-// 	res, err := netClient.PostForm(server.URL+"/login", url.Values{"UserName": {userInfo.UserName}, "StudentID": {userInfo.StudentID}})
-// 	if err != nil {
-// 		log.Fatal("error:", err)
-// 		return
-// 	}
+	res, err := netClient.PostForm(server.URL+"/login", form)
+	// res, err := netClient.PostForm(server.URL+"/login", url.Values{"UserName": {userInfo.UserName}, "StudentID": {userInfo.StudentID}})
+	if err != nil {
+		log.Fatal("error:", err)
+		return
+	}
 
-// 	defer res.Body.Close()
-// 	data, err := ioutil.ReadAll(res.Body)
-// 	if err != nil {
-// 		t.Errorf("expected error to be nil got %v", err)
-// 	}
-
-// 	if !strings.Contains(string(data), "Exam Page") {
-// 		t.Errorf("expected ABC got %v", string(data))
-// 	}
-// }
+	// here this case will definitely fail because when redirecting to the
+	// Exam page, the program checks if the user has been logged in by checking
+	// cookie and session. If use postform to test, the cookie might not be
+	// generated and redirect to login page again.
+	defer res.Body.Close()
+	data, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		t.Errorf("expected error to be nil got %v", err)
+	}
+	if !strings.Contains(string(data), "Test Main Page") {
+		t.Error("expected enter exam page.")
+	}
+}

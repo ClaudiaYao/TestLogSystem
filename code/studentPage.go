@@ -16,7 +16,6 @@ func ExamPage(res http.ResponseWriter, req *http.Request) {
 	params := mux.Vars(req)
 
 	if req.Method == http.MethodGet {
-
 		// not logged in.
 		login_student_id, err := alreadyLoggedIn(req)
 		if !err {
@@ -74,7 +73,7 @@ func ExamPage(res http.ResponseWriter, req *http.Request) {
 		fmt.Println("submit the files.")
 		student_id := sanitize.HTML(params["StudentID"])
 		fmt.Println("posting: get student id:", student_id)
-		fmt.Println(req.FormValue("Submit"))
+		// fmt.Println(req.FormValue("Submit"))
 		// when user submitted files, call the function uploadFiles, also
 		// pass the student id, so that the zipped folder will use student id info.
 		if req.FormValue("Submit") != "" {
@@ -144,5 +143,3 @@ func uploadFile(w http.ResponseWriter, r *http.Request, studentID string) (strin
 	return getShortFileName(save_file.Name()), true
 	// fmt.Fprintf(w, "Successfully Uploaded File\n")
 }
-
-
