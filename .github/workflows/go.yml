@@ -28,6 +28,6 @@ jobs:
 
     - name: test
       run: |
-        cd TestLogSystem/code
+        cd code
         ls
         go test -v .
