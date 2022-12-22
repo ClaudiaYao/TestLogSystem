@@ -14,8 +14,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: check out the branch
-      uses: actions/checkout@v3
+    - name: checkout my codes
+      uses: actions/checkout@v2
+      
+    - name: Print and list out content
+      run: echo Hello There!
     
     - name: Setup Go environment
       uses: actions/setup-go@v3.5.0
@@ -24,4 +27,7 @@ jobs:
         go-version: 1.19.3 # optional
 
     - name: test
-      run: cd /home/runner/work/TestLogSystem/TestLogSystem/code/ | ls | go test -v .
+      run: |
+        cd TestLogSystem/code
+        ls
+        go test -v .
