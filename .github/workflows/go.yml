@@ -24,4 +24,4 @@ jobs:
         go-version: 1.19.3 # optional
 
     - name: test
-      run: cd /home/runner/work/TestLogSystem/TestLogSystem/code | go test -v .
+      run: cd /home/runner/work/TestLogSystem/TestLogSystem/code/ | ls | go test -v .
