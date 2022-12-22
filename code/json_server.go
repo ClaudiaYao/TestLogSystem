@@ -28,6 +28,5 @@ func ReadJsonAdmin() {
 	// we unmarshal our byteArray which contains our
 	// jsonFile's content into 'users' which we defined above
 	json.Unmarshal(byteValue, &Admin)
-	fmt.Println(Admin)
 
 }

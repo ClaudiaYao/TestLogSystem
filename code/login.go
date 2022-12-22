@@ -26,8 +26,6 @@ func checkAdminInfoMatch(input_user_name, input_password string) bool {
 	if strings.EqualFold(Admin.UserName, input_user_name) {
 		// bcrypt.GenerateFromPassword([]byte(input_password), bcrypt.DefaultCost)
 		// fmt.Println(bcrypt.GenerateFromPassword([]byte(input_password), bcrypt.DefaultCost))
-		fmt.Println(Admin.Password)
-		fmt.Println("input:", input_password)
 		err := bcrypt.CompareHashAndPassword(Admin.Password, []byte(input_password))
 		if err != nil {
 			return false
@@ -98,7 +96,6 @@ func Login(res http.ResponseWriter, req *http.Request) {
 
 		// check if user exist with username
 		ok := CheckUserInfoMatch(username, student_id)
-		// fmt.Println("match user name and student id", ok)
 		if !ok {
 			http.Error(res, "Username or student id does not match.", http.StatusUnauthorized)
 			fmt.Println("not match!")
@@ -122,7 +119,6 @@ func Login(res http.ResponseWriter, req *http.Request) {
 		// uses the earlier one.
 
 		login_info, ok := LoginMap[student_id]
-		fmt.Println("login info:", login_info)
 		if !ok {
 			fmt.Println("Student is the first time login.")
 		}
@@ -131,7 +127,7 @@ func Login(res http.ResponseWriter, req *http.Request) {
 			SaveToTestLogFile()
 		}
 		// fmt.Println(*login_info)
-		fmt.Println("redirect...")
+		fmt.Println("redirect...", student_id)
 		// mu_session.Unlock()
 		http.Redirect(res, req, "/ExamPage/"+student_id, http.StatusSeeOther)
 		return

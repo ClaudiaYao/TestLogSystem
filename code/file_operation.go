@@ -11,13 +11,12 @@ import (
 func ReadFromLoginFile() {
 
 	if !isFileExist(getProjectRootPath() + "/data/log_info.txt") {
-		// log_info could be non-existing, because no student has login in.
 		fmt.Println("log info file does not exist.")
 		return
 	}
 
 	f, err := os.Open(getProjectRootPath() + "/data/log_info.txt")
-	// if we os.Open returns an error then handle it
+
 	if err != nil {
 		log.Fatal("Fail to open log_info.txt", err)
 	}
@@ -27,14 +26,12 @@ func ReadFromLoginFile() {
 	// read our opened file as a byte array.
 
 	// we unmarshal our byteArray which contains our
-	// jsonFile's content into 'users' which we defined above
 	scanner := bufio.NewScanner(f)
 	// optionally, resize scanner's capacity for lines over 64K, see next example
 	for scanner.Scan() {
 		s := strings.TrimSuffix(scanner.Text(), "\n")
 		login_info := strings.Split(s, ",")
 
-		fmt.Println(login_info)
 		LoginMap[login_info[0]] = &LoginInfo{StudentID: login_info[0], LoggingTime: login_info[1],
 			SubmittingTime: login_info[2], SubmittedFileName: login_info[3]}
 	}
@@ -42,8 +39,6 @@ func ReadFromLoginFile() {
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
-
-	// fmt.Println(LoginMap)
 
 }
 
@@ -77,8 +72,6 @@ func ReadFromUserFile() {
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
-
-	// fmt.Println(UserMap)
 
 }
 
